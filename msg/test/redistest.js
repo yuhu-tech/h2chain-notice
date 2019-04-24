@@ -4,7 +4,7 @@ async function Set() {
     //var userId = 'tdergouziadviser'
     var userId = 'tdergouzihotel'
     var orderId = 'orderid'
-    var formId = '7577a787236d46509057afaa75fc921a'
+    var formId = 'f0d7ba387de0408e8173348561c4b26a'
 
     var Res = await operation.setFormId(userId, orderId, formId);
     console.log("res")
@@ -20,5 +20,5 @@ async function Get(){
     console.log(res.formId)
 }
 
-//Set();
-Get()
+Set();
+//Get()

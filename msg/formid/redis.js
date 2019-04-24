@@ -47,50 +47,62 @@ function clientDel(key, field) {
 
 // 存储formId 
 var setFormId = async function (userId, orderId, formId) {
-    var key = userId + orderId
-    var field = Date.now()
-    await clientOn()
-    var res = await clientSet(key, field, formId)       //存在错误返回,err需要处理
-    return res
+    try {
+        var key = userId + orderId
+        var field = Date.now()
+        await clientOn()
+        var res = await clientSet(key, field, formId)
+        return res
+    } catch (error) {
+        console.log('存储formid错误:',error)
+    }
 }
 
 // 获取formId 
 var getFormId = async function (key) {
-    await clientOn
-    var res = await clientGet(key)              //存在错误返回,err需要处理
-    var fields = []
-    var values = []
-    var res_field = ''
-    var res_value = ''
-    for (var field in res) {
-        fields.push(field)
-        if (res.hasOwnProperty(field)) {
-            var element = res[field];
-            values.push(element)
+    try {
+        await clientOn
+        var res = await clientGet(key)
+        var fields = []
+        var values = []
+        var res_field = ''
+        var res_value = ''
+        for (var field in res) {
+            fields.push(field)
+            if (res.hasOwnProperty(field)) {
+                var element = res[field];
+                values.push(element)
+            }
         }
-    }
-    for (var i = 0; i < values.length; i++) {
-        var passTime = Date.now() - fields[i]
-        var weekTime = 7 * 24 * 3600 * 1000
-        if (passTime < weekTime) {
-            res_field = fields[i]
-            res_value = values[i]
-            break
-        } else {
-            await delFormId(key, fields[i])
+        for (var i = 0; i < values.length; i++) {
+            var passTime = Date.now() - fields[i]
+            var weekTime = 7 * 24 * 3600 * 1000
+            if (passTime < weekTime) {
+                res_field = fields[i]
+                res_value = values[i]
+                break
+            } else {
+                await delFormId(key, fields[i])
+            }
         }
-    }
-    return {
-        field: res_field,
-        formId: res_value,
+        return {
+            field: res_field,
+            formId: res_value,
+        }
+    } catch (error) {
+        console.log('获取formid错误:',error)
     }
 }
 
 // 删除formId 
 var delFormId = async function (key, field) {
-    await clientOn
-    var res = await clientDel(key, field)       //存在错误返回,err需要处理
-    return res
+    try {
+        await clientOn
+        var res = await clientDel(key, field)
+        return res
+    } catch (error) {
+        console.log('删除formid错误:',error)
+    }
 }
 
 

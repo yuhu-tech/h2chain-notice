@@ -38,26 +38,34 @@ function clientGet(key) {
 
 // 存储access_token
 var setAccessToken = async function (key, value) {
-    await clientOn()
-    var res = await clientSet(key, value)       //存在错误返回,err需要处理
-    return res
+    try {
+        await clientOn()
+        var res = await clientSet(key, value)
+        return res
+    } catch (error) {
+        console.log('redis存储access_token错误:',error)
+    }
 }
 
 // 获取access_token
 var getAccessToken = async function (num) {
-    var key = ''
-    if (num === 1) {
-        key = 'hotel'
-    } else if (num === 2) {
-        key = 'adviser'
-    } else if (num === 3) {
-        key = 'pt'
-    } else {
+    try {
+        var key = ''
+        if (num === 1) {
+            key = 'hotel'
+        } else if (num === 2) {
+            key = 'adviser'
+        } else if (num === 3) {
+            key = 'pt'
+        } else {
 
+        }
+        await clientOn
+        var res = await clientGet(key)             
+        return res
+    } catch (error) {
+        console.log('redis中获取access_token错误:',error)
     }
-    await clientOn
-    var res = await clientGet(key)              //存在错误返回,err需要处理
-    return res
 }
 
 
