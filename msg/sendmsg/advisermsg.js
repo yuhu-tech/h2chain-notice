@@ -12,14 +12,14 @@ const rds = require('../../utils/redis_accesstoken')
 async function sendTemplateMsgToAdviser() {
 
     //获取access_token 拼接url
-    var access_token = await rds.GetAccessToken(2)         //err未处理
+    var access_token = await rds.getAccessToken(2)         //err未处理
     
     console.log('1.获取小程序access_token:' + access_token)
     const url = `https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=${access_token}`
 
     //获取field和formId
     var key = msg.AdviserMsgData.userId + msg.AdviserMsgData.orderId
-    var getRes = await formId.GetFromId(key);                 //err未处理
+    var getRes = await formId.getFormId(key);                 //err未处理
     console.log('2.获取用户fied+formId:' + getRes.formId)
 
     //获取消息模版,拼接消息内容
@@ -130,7 +130,7 @@ async function sendTemplateMsgToAdviser() {
     });
 
     //发送完成后删除已使用的formid
-    var delres = await formId.DelFormId(key, getRes.field)
+    var delres = await formId.delFormId(key, getRes.field)
     console.log('删除结果:' + delres)
 };
 

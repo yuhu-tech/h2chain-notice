@@ -1,32 +1,32 @@
 const GET = require('../../utils/wx_accesstoken')
 const RDS = require('../../utils/redis_accesstoken')
 
-async function ReflashHotelAT (){
+async function refreshHotelAT (){
     var num = 1
     var key = 'hotel'
     var value = await GET.getAccessToken(num)
-    var res = await RDS.SetAccessToken(key,value)
+    var res = await RDS.setAccessToken(key,value)
     return res
 }
 
-async function ReflashAdviserAT (){
+async function refreshAdviserAT (){
     var num = 2
     var key = 'adviser'
     var value = await GET.getAccessToken(num) 
-    var res = await RDS.SetAccessToken(key,value)
+    var res = await RDS.setAccessToken(key,value)
     return res
 }
 
-async function ReflashPtAT (){
+async function refreshPtAT (){
     var num = 3
     var key = 'pt'
     var value = await GET.getAccessToken(num) 
-    var res = await RDS.SetAccessToken(key,value)
+    var res = await RDS.setAccessToken(key,value)
     return res
 }
 
 module.exports = {
-    ReflashHotelAT,
-    ReflashAdviserAT,
-    ReflashPtAT
+    refreshHotelAT,
+    refreshAdviserAT,
+    refreshPtAT
 }

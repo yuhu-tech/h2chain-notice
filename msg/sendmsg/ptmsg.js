@@ -2,7 +2,6 @@ const request = require('request')
 const templates = require('../model/msgtemplates')
 const msg = require('../model/sendrequest')
 const formId = require('../formid/redis')
-const utils = require('../../utils/wx_accesstoken')
 const rds = require('../../utils/redis_accesstoken')
 
 
@@ -13,14 +12,14 @@ const rds = require('../../utils/redis_accesstoken')
 async function sendTemplateMsgToPt() {
 
     //获取access_token 拼接url
-    var access_token = await rds.GetAccessToken(3)          //err未处理
+    var access_token = await rds.getAccessToken(3)          //err未处理
     console.log('1.获取小程序access_token:' + access_token)
     const url = `https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=${access_token}`
 
     //获取field和formId
     var key = msg.PtMsgData.userId + msg.PtMsgData.orderId
-    var getRes = await formId.GetFromId(key);                 //err未处理
-    console.log('2.获取用户fied+formId:'+getRes.formId)
+    var getRes = await formId.getFormId(key);                 //err未处理
+    console.log('2.获取用户fied+formId:' + getRes.formId)
 
     //获取消息模版,拼接消息内容
     var templateId = ''
@@ -51,7 +50,7 @@ async function sendTemplateMsgToPt() {
                 },
             }
             break;
-        default:
+        case 3:
             templateId = templates.PtTIs.msgThree
             data = {
                 "keyword1": {
@@ -61,6 +60,8 @@ async function sendTemplateMsgToPt() {
                     "value": msg.PtMsgData.content.keyword2
                 },
             }
+            break;
+        default:
             break;
     }
 
@@ -72,7 +73,7 @@ async function sendTemplateMsgToPt() {
         "form_id": getRes.formId,
         "data": data,
     };
-    console.log('3.最终拼接数据为:'+requestData)
+    console.log('3.最终拼接数据为:' + requestData)
 
     // 发送模版消息
     await request({
@@ -86,7 +87,7 @@ async function sendTemplateMsgToPt() {
     });
 
     //发送完成后删除已使用的formid
-    var delres = await formId.DelFormId(key, getRes.field)
+    var delres = await formId.delFormId(key, getRes.field)
     console.log('删除结果:' + delres)
 };
 

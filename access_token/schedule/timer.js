@@ -1,9 +1,9 @@
-const Reflash = require('../reflasher/reflash')
+const refresh = require('../refresher/refresh')
 
-async function Timer(){
-    await Reflash.ReflashHotelAT();
-    await Reflash.ReflashAdviserAT();
-    await Reflash.ReflashPtAT();
+async function timer(){
+    await refresh.refreshHotelAT();
+    await refresh.refreshAdviserAT();
+    await refresh.refreshPtAT();
 }
 
-setInterval(Timer,180*1000)
+setInterval(timer,180*1000)
