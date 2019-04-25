@@ -1,62 +1,46 @@
 const request = require('request')
 const templates = require('../model/msgtemplates')
-const msg = require('../model/sendrequest')
 const formId = require('../formid/redis')
 const rds = require('../../utils/redis_accesstoken')
 
 
-/*
-1.调用sendTemplateMsgToPt()应传入msg.PtMsgData结构类型数据作为参数
-2.此处为测试和后续开发，直接引用../model/sendrequest文件中的数据作为传参
-*/
-async function sendTemplateMsgToPt() {
+async function sendTemplateMsgToHotel(HotelMsgData) {
     try {
         //获取access_token 拼接url
-        var num = 3
+        var num = 1
         var access_token = await rds.getAccessToken(num)
         const url = `https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=${access_token}`
 
         //获取field和formId
-        var key = msg.PtMsgData.userId + msg.PtMsgData.orderId
-        var getRes = await formId.getFormId(key);                 //err未处理
+        var key = HotelMsgData.userId + HotelMsgData.orderId
+        var getRes = await formId.getFormId(key);
 
         //获取消息模版,拼接消息内容
         var templateId = ''
         var data = {}
-        switch (msg.PtMsgData.num) {
+        switch (HotelMsgData.num) {
             case 1:
-                templateId = templates.PtTIs.msgOne
+                templateId = templates.HotelTIs.msgOne
                 data = {
                     "keyword1": {
-                        "value": msg.PtMsgData.content.keyword1
+                        "value": HotelMsgData.content.keyword1
                     },
                     "keyword2": {
-                        "value": msg.PtMsgData.content.keyword2
+                        "value": HotelMsgData.content.keyword2
+                    },
+                    "keyword3": {
+                        "value": HotelMsgData.content.keyword3
                     },
                 }
                 break;
             case 2:
-                templateId = templates.PtTIs.msgTwo
+                templateId = templates.HotelTIs.msgTwo
                 data = {
                     "keyword1": {
-                        "value": msg.PtMsgData.content.keyword1
+                        "value": HotelMsgData.content.keyword1
                     },
                     "keyword2": {
-                        "value": msg.PtMsgData.content.keyword2
-                    },
-                    "keyword3": {
-                        "value": msg.PtMsgData.content.keyword3
-                    },
-                }
-                break;
-            case 3:
-                templateId = templates.PtTIs.msgThree
-                data = {
-                    "keyword1": {
-                        "value": msg.PtMsgData.content.keyword1
-                    },
-                    "keyword2": {
-                        "value": msg.PtMsgData.content.keyword2
+                        "value": HotelMsgData.content.keyword2
                     },
                 }
                 break;
@@ -66,7 +50,7 @@ async function sendTemplateMsgToPt() {
 
         // 拼接模版消息发送的requestData数据
         const requestData = {
-            "touser": msg.PtMsgData.openId,
+            "touser": HotelMsgData.openId,
             "template_id": templateId,
             "page": "index",
             "form_id": getRes.formId,
@@ -90,12 +74,11 @@ async function sendTemplateMsgToPt() {
         var delres = await formId.delFormId(key, getRes.field)
         console.log('删除结果:' + delres)
     } catch (error) {
-        console.log('PT端消息推送失败:', error)
+        console.log('酒店端推送消息失败:', error)
     }
-
 };
 
 
 module.exports = {
-    sendTemplateMsgToPt
+    sendTemplateMsgToHotel
 };
